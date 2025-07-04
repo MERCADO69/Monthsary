@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Catch the Hearts Game</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .heart {
+      position: absolute;
+      width: 30px;
+      cursor: pointer;
+      animation: fall linear;
+      z-index: 5;
+    }
+
+    @keyframes fall {
+      0% { top: -30px; }
+      100% { top: 100vh; }
+    }
+
+    #progressContainer {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80%;
+      background: #ffe6f0;
+      border: 2px solid #ffb6c1;
+      border-radius: 15px;
+      overflow: hidden;
+      z-index: 10;
+      box-shadow: 0 0 10px rgba(255, 182, 193, 0.5);
+    }
+
+    #progressBar {
+      width: 0%;
+      height: 20px;
+      background: #ff69b4;
+      transition: width 0.3s;
+    }
+
+    #scoreDisplay {
+      position: fixed;
+      top: 50px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #ff69b4;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 15px;
+      font-size: 1rem;
+      z-index: 10;
+      box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+    }
+
+    #pauseBtn {
+      position: fixed;
+      top: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 11;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="flowerCanvas"></canvas>
+
+  <div id="progressContainer">
+    <div id="progressBar"></div>
+  </div>
+
+  <div id="scoreDisplay">Hearts Caught: 0</div>
+  <button id="pauseBtn" class="btn">Pause Game</button>
+
+  <!-- Milestone Modal -->
+  <div id="milestoneModal" class="modal">
+    <div class="modal-content">
+      <h2 id="milestoneText">💖</h2>
+      <button id="milestoneOk" class="btn">Aww Okay!</button>
+    </div>
+  </div>
+
+  <a href="index.html" class="btn" style="position:fixed; bottom:20px; left:20px; z-index:11;">Back to Home</a>
+
+  <script src="flowers.js"></script>
+  <script>
+    const progressBar = document.getElementById('progressBar');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const milestoneModal = document.getElementById('milestoneModal');
+    const milestoneText = document.getElementById('milestoneText');
+    const milestoneOk = document.getElementById('milestoneOk');
+    const pauseBtn = document.getElementById('pauseBtn');
+
+    let score = 0;
+    const maxScore = 50;
+    let isPaused = false;
+    let heartInterval;
+
+    function generateHeart() {
+      if (isPaused) return;
+
+      const heart = document.createElement('img');
+      heart.src = 'https://cdn-icons-png.flaticon.com/512/833/833472.png';
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * (window.innerWidth - 30) + 'px';
+      heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
+      document.body.appendChild(heart);
+
+      heart.addEventListener('click', () => {
+        score++;
+        updateProgress();
+        heart.remove();
+        checkMilestones();
+      });
+
+      heart.addEventListener('animationend', () => {
+        heart.remove();
+      });
+
+      if (score < maxScore) {
+        heartInterval = setTimeout(generateHeart, 1000);
+      }
+    }
+
+    function updateProgress() {
+      const percentage = (score / maxScore) * 100;
+      progressBar.style.width = percentage + '%';
+      scoreDisplay.textContent = 'Hearts Caught: ' + score;
+    }
+
+    function checkMilestones() {
+      if (score === 10) showMilestone("Aww... you love me a little! 🥰");
+      if (score === 20) showMilestone("Okay, this is getting serious! 😍");
+      if (score === 30) showMilestone("Waaah, you really love me! 💖");
+      if (score === 40) showMilestone("You're unstoppable, so in love! 💕");
+      if (score === 50) showMilestone("YOU REALLY LOVE MEEEE!!! 💖💖💖");
+    }
+
+    function showMilestone(message) {
+      milestoneText.textContent = message;
+      milestoneModal.style.display = 'flex';
+    }
+
+    milestoneOk.addEventListener('click', () => {
+      milestoneModal.style.display = 'none';
+      if (score < maxScore) generateHeart();
+    });
+
+    pauseBtn.addEventListener('click', () => {
+      isPaused = !isPaused;
+      pauseBtn.textContent = isPaused ? 'Resume Game' : 'Pause Game';
+
+      if (!isPaused && score < maxScore) {
+        generateHeart();
+      }
+    });
+
+    // Start the game
+    generateHeart();
+  </script>
+</body>
+</html>

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Love Typewriter 💌</title>
+  <style>
+    body {
+      background: #fff0f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      text-align: center;
+      font-family: 'Comic Sans MS', cursive, sans-serif;
+      padding: 20px;
+    }
+
+    #typewriterText {
+      font-size: 1.2rem;
+      color: #d63384;
+      max-width: 90%;
+      border-right: 2px solid #d63384;
+      white-space: pre-wrap;
+      text-align: left;
+    }
+
+      @keyframes blink {
+        0%, 100% { border-color: transparent; }
+        50% { border-color: #d63384; }
+      }
+
+    #typewriterText {
+      animation: blink 0.7s infinite;
+      min-height: 150px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      background: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      text-decoration: none;
+      box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="typewriterText"></div>
+
+  <a href="index.html" class="btn">Back to Home</a>
+
+  <script>
+    const text = `Hi love Happy Monthsary, I'm so happy na ikaw akong partner, you're very hardworking and always consider me.\n\nI'm always rooting sa atoang success duha, and always remember palangga kaayo taka ha.\n\nThank you kaayo pag sabot sa atong situation even though I know it's hard but ginakaya nimo.\n\nAlways amping lang, Dle kalimtan na palangga kaayo taka.\n\nHappy 1st Monthsary natong duha love. I love you always, bahalag mag minaldita ka — mwaa mwaa. 💖`;
+
+    let index = 0;
+    const speed = 50; // typing speed in ms
+
+    function typeWriter() {
+      if (index < text.length) {
+        const display = document.getElementById('typewriterText');
+        display.innerHTML += text.charAt(index) === "\n" ? "<br>" : text.charAt(index);
+        index++;
+        setTimeout(typeWriter, speed);
+      }
+    }
+
+    typeWriter();
+  </script>
+
+</body>
+</html>

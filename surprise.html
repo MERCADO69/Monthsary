@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Surprise!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="flowerCanvas"></canvas>
+
+  <div class="card">
+    <h1>🎉 Surprise! 🎉</h1>
+    <p>You are my favorite notification, my sunshine, my everything! 💕</p>
+    <button id="surpriseBtn" class="btn">Click Me!</button>
+    <a href="index.html" class="btn">Back to Home</a>
+  </div>
+
+  <!-- Surprise Modal -->
+  <div id="surpriseModal" class="modal">
+    <div class="modal-content">
+      <img src="https://cdn-icons-png.flaticon.com/512/833/833472.png" alt="Dancing Heart" class="heart-icon">
+      <h2>💖 I Love You So Much! 💖</h2>
+      <p>Happy Monthsary, My Love!</p>
+      <button id="closeModal" class="btn">Aww, I Love You Too!</button>
+      <a href="typewriter.html" class="btn">Secret Message 💌</a>
+
+    </div>
+  </div>
+
+  <script src="flowers.js"></script>
+  <script>
+    const surpriseBtn = document.getElementById('surpriseBtn');
+    const surpriseModal = document.getElementById('surpriseModal');
+    const closeModal = document.getElementById('closeModal');
+
+    surpriseBtn.addEventListener('click', () => {
+      surpriseModal.style.display = 'flex';
+    });
+
+    closeModal.addEventListener('click', () => {
+      surpriseModal.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

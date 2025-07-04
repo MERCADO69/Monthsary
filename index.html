@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Happy Monthsary!</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="flowerCanvas"></canvas>
+
+  <div class="card">
+    <h1>💖 Happy Monthsary 💖</h1>
+    <p>Welcome to our little digital surprise!</p>
+    <div class="btn-group">
+      <a href="gallery.html" class="btn">View Gallery</a>
+      <a href="game.html" class="btn">Play Catch the Hearts</a>
+      <a href="wheel.html" class="btn">Spin the Wheel of love</a>
+      <button id="secretBtn" class="btn">Secret Surprise</button>
+    </div>
+  </div>
+
+  <!-- Passcode Modal -->
+  <div id="passModal" class="modal">
+    <div class="modal-content">
+      <h2>🔒 Secret Passcode</h2>
+      <p>Hint: The passcode starts with 0 and ends with 5... it's basically our month 😉</p>
+      <input type="text" id="passInput" placeholder="Enter passcode" maxlength="6">
+      <div class="modal-buttons">
+        <button id="submitPass" class="btn">Submit</button>
+        <button id="cancelPass" class="btn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Wrong Passcode Modal -->
+  <div id="wrongModal" class="modal">
+    <div class="modal-content">
+      <h2>😢 Oops!</h2>
+      <p>Wrong passcode. Try again, love 💖</p>
+      <div class="modal-buttons">
+        <button id="wrongOk" class="btn">Okay</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="flowers.js"></script>
+  <script>
+    const modal = document.getElementById('passModal');
+    const secretBtn = document.getElementById('secretBtn');
+    const submitPass = document.getElementById('submitPass');
+    const cancelPass = document.getElementById('cancelPass');
+    const passInput = document.getElementById('passInput');
+    const wrongModal = document.getElementById('wrongModal');
+    const wrongOk = document.getElementById('wrongOk');
+
+    secretBtn.addEventListener('click', () => {
+      modal.style.display = 'flex';
+      passInput.value = '';
+      passInput.focus();
+    });
+
+    cancelPass.addEventListener('click', () => {
+      modal.style.display = 'none';
+    });
+
+    submitPass.addEventListener('click', () => {
+      if (passInput.value === '060525') {
+        window.location.href = 'surprise.html';
+      } else {
+        modal.style.display = 'none';
+        wrongModal.style.display = 'flex';
+      }
+    });
+
+    wrongOk.addEventListener('click', () => {
+      wrongModal.style.display = 'none';
+      modal.style.display = 'flex';
+      passInput.value = '';
+      passInput.focus();
+    });
+
+    passInput.addEventListener('input', () => {
+      passInput.value = passInput.value.replace(/\D/g, '');
+    });
+  </script>
+</body>
+</html>

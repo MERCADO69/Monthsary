@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spin the Love Wheel</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      background: #fff0f5;
+      margin: 0;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    #wheelCanvas {
+      background: #ffe6f0;
+      border: 5px solid #ffb6c1;
+      border-radius: 50%;
+      box-shadow: 0 0 20px rgba(255, 182, 193, 0.5);
+    }
+
+    #result {
+      margin: 20px 10px 5px;
+      font-size: 1.3rem;
+      color: #d63384;
+      font-weight: bold;
+      min-height: 1.5em;
+    }
+
+    #rewardLink {
+      font-size: 0.9rem;
+      color: #d63384;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-bottom: 10px;
+      display: none;
+    }
+
+    #rewardText {
+      margin-top: 10px;
+      color: #d63384;
+      font-size: 1.1rem;
+      font-weight: bold;
+      display: none;
+    }
+
+    #spinBtn {
+      padding: 10px 20px;
+      background: #ff69b4;
+      color: white;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      box-shadow: 0 0 10px rgba(255, 105, 180, 0.5);
+    }
+
+    .flower {
+      position: fixed;
+      font-size: 24px;
+      z-index: 9999;
+      animation: fall linear;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(-30px); }
+      100% { transform: translateY(100vh); }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="wheelCanvas" width="300" height="300"></canvas>
+  <div id="result"></div>
+  <div id="rewardLink">View Reward 🎁</div>
+  <div id="rewardText"></div>
+
+  <button id="spinBtn">Spin the Wheel!</button>
+
+  <a href="index.html" class="btn" style="position:fixed; bottom:20px; left:20px;">Back to Home</a>
+
+  <script>
+    const wheelCanvas = document.getElementById('wheelCanvas');
+    const ctx = wheelCanvas.getContext('2d');
+    const spinBtn = document.getElementById('spinBtn');
+    const result = document.getElementById('result');
+    const rewardLink = document.getElementById('rewardLink');
+    const rewardText = document.getElementById('rewardText');
+
+    const segments = [
+      "Virtual Hug! 🤗",
+      "I love you more than fries! 🍟",
+      "Blow me a kiss! 😘",
+      "Smile for me! 😊",
+      "Favorite person ever! 💖",
+      "Sing me a love song! 🎶",
+      "YOU REALLY LOVE MEEEE!!! 💕"
+    ];
+
+    const colors = ['#ffb6c1', '#ffc0cb', '#ffe6f0', '#ff69b4', '#ffa6c9', '#ffb3d9', '#ff85a2'];
+
+    const rewards = [
+      { type: 'text', message: '💌 You got a Virtual Hug! I love youuuu!' },
+      { type: 'text', message: '🍟 Fries can’t compare to my love!' },
+      { type: 'text', message: '😘 Blow me a kiss, cutie!' },
+      { type: 'text', message: '😊 Smile brighter for me!' },
+      { type: 'text', message: '💖 My favorite person award goes to YOU!' },
+      { type: 'text', message: '🎤 Love song mode activated… in my heart!' },
+      { type: 'flowerRain', message: '🌸 It’s raining loveeee!' }
+    ];
+
+    let angle = 0;
+    let spinning = false;
+    let rewardAvailable = false;
+    let currentReward = null;
+
+    function drawWheel() {
+      const centerX = wheelCanvas.width / 2;
+      const centerY = wheelCanvas.height / 2;
+      const radius = wheelCanvas.width / 2;
+      const segAngle = (2 * Math.PI) / segments.length;
+
+      ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
+
+      for (let i = 0; i < segments.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.fillStyle = colors[i % colors.length];
+        ctx.arc(centerX, centerY, radius, angle + i * segAngle, angle + (i + 1) * segAngle);
+        ctx.fill();
+      }
+    }
+
+    function spinWheel() {
+      if (spinning) return;
+      spinning = true;
+      rewardAvailable = false;
+      result.textContent = "";
+      rewardLink.style.display = "none";
+      rewardText.style.display = "none";
+
+      let spinTime = 0;
+      const spinDuration = 4000;
+      const finalAngle = Math.random() * 360 + 720;
+
+      function animateSpin(timestamp) {
+        if (!spinTime) spinTime = timestamp;
+        const elapsed = timestamp - spinTime;
+        const progress = Math.min(elapsed / spinDuration, 1);
+
+        angle += (finalAngle * (1 - Math.pow(1 - progress, 3))) * Math.PI / 180;
+        drawWheel();
+
+        if (progress < 1) {
+          requestAnimationFrame(animateSpin);
+        } else {
+          const segAngle = (2 * Math.PI) / segments.length;
+          const landedIndex = Math.floor(((2 * Math.PI) - (angle % (2 * Math.PI))) / segAngle) % segments.length;
+          result.textContent = segments[landedIndex];
+          currentReward = rewards[landedIndex];
+          rewardLink.style.display = "block";
+          rewardAvailable = true;
+          spinning = false;
+        }
+      }
+
+      requestAnimationFrame(animateSpin);
+    }
+
+    function showReward() {
+      if (!rewardAvailable || !currentReward) return;
+
+      rewardText.style.display = "none";
+
+      if (currentReward.type === 'text') {
+        rewardText.textContent = currentReward.message;
+        rewardText.style.display = "block";
+      } else if (currentReward.type === 'flowerRain') {
+        rewardText.textContent = currentReward.message;
+        rewardText.style.display = "block";
+        for (let i = 0; i < 30; i++) {
+          const flower = document.createElement("div");
+          flower.textContent = "🌸";
+          flower.classList.add("flower");
+          flower.style.left = Math.random() * window.innerWidth + "px";
+          flower.style.top = "-30px";
+          flower.style.animationDuration = (2 + Math.random() * 3) + "s";
+          document.body.appendChild(flower);
+
+          setTimeout(() => {
+            flower.remove();
+          }, 5000);
+        }
+      }
+
+      rewardAvailable = false;
+      rewardLink.style.display = "none";
+    }
+
+    spinBtn.addEventListener('click', spinWheel);
+    rewardLink.addEventListener('click', showReward);
+    drawWheel();
+  </script>
+</body>
+</html>
